@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.3.2</version>
+    </parent>
+
+    <groupId>com.luyan</groupId>
+    <artifactId>YanPaiBlog</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>YanPaiBlog-web</module>
+        <module>YanPaiBlog-service</module>
+        <module>YanPaiBlog-entity</module>
+    </modules>
+
+    <properties>
+        <maven.compiler.source>19</maven.compiler.source>
+        <maven.compiler.target>19</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <YanPaiBlog.version>1.0-SNAPSHOT</YanPaiBlog.version>
+        <mysql.version>8.0.33</mysql.version>
+        <liquibase.version>4.29.1</liquibase.version>
+        <lombok.version>1.18.34</lombok.version>
+        <druid.version>1.2.23</druid.version>
+        <mybatis-plus.version>3.5.7</mybatis-plus.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.luyan</groupId>
+                <artifactId>YanPaiBlog-web</artifactId>
+                <version>${YanPaiBlog.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.luyan</groupId>
+                <artifactId>YanPaiBlog-service</artifactId>
+                <version>${YanPaiBlog.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.luyan</groupId>
+                <artifactId>YanPaiBlog-entity</artifactId>
+                <version>${YanPaiBlog.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>mysql</groupId>
+                <artifactId>mysql-connector-java</artifactId>
+                <version>${mysql.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>druid-spring-boot-3-starter</artifactId>
+                <version>${druid.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.liquibase</groupId>
+                <artifactId>liquibase-core</artifactId>
+                <version>${liquibase.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>${lombok.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-boot-starter</artifactId>
+                <version>${mybatis-plus.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+</project>

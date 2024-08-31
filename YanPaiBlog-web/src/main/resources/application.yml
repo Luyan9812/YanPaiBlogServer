@@ -1,0 +1,30 @@
+server:
+  port: 8081
+
+database:
+  name: yan_pai_blog
+
+global:
+  salt: π
+
+jwt:
+  token:
+    signature: bHV5YW4gMTk5OC4xMi4wOQpMTyAwMy4wOCBWRQpsaXVtaWFveGlhIDE5OTguMDUuMjE=
+    expiration: 168 # token 有效时常，单位小时即 7 天有效期
+
+spring:
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    username: root
+    password: mysql2425@
+    url: jdbc:mysql://localhost:3306/${database.name}?&createDatabaseIfNotExist=true&useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Shanghai
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  liquibase:
+    change-log: classpath:liquibase/master.xml
+    enabled: true
+
+mybatis-plus:
+  global-config:
+    db-config:
+      id-type: auto
+  type-aliases-package: com.luyan.entity.domain

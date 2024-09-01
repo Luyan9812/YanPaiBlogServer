@@ -21,6 +21,8 @@ import java.util.Map;
 public class UserController {
     @Resource
     private UserService userService;
+    @Resource
+    private UserInfoService userInfoService;
 
     @PostMapping("register")
     public R<Object> register(@RequestBody @Validated User user) {
@@ -36,18 +38,21 @@ public class UserController {
         if (token == null) {
             return R.error(ResultCodeEnum.UNKNOWN_ERROR);
         }
-        Map<String, String> map = new HashMap<>();
-        map.put("token", token);
-        return R.ok(map);
+        return R.okPairs(R.Pair.of("token", token));
     }
 
     @GetMapping("indexUserInfo")
     public R<Map<String, Object>> getIndexUserInfo() {
-        return R.ok(userService.getIndexUserInfo());
+        return R.ok(userInfoService.getIndexUserInfo());
     }
 
     @GetMapping("userInfo")
     public R<UserInfoDto> getUserInfo() {
-        return R.ok(userService.getUserInfo());
+        return R.ok(userInfoService.getUserInfo());
+    }
+
+    @GetMapping("achievement")
+    public R<Object> getAchievement() {
+        return R.ok(userService.getAchievement());
     }
 }

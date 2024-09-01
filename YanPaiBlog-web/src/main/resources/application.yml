@@ -6,6 +6,8 @@ database:
 
 global:
   salt: π
+  upload_covers: ${global.base_upload_path}/covers/
+  upload_headers: ${global.base_upload_path}/headers/
 
 jwt:
   token:
@@ -16,12 +18,16 @@ spring:
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
     username: root
-    password: mysql2425@
     url: jdbc:mysql://localhost:3306/${database.name}?&createDatabaseIfNotExist=true&useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Shanghai
     driver-class-name: com.mysql.cj.jdbc.Driver
   liquibase:
     change-log: classpath:liquibase/master.xml
     enabled: true
+  servlet:
+    multipart:
+      max-file-size: 5MB
+  profiles:
+    active: local
 
 mybatis-plus:
   global-config:

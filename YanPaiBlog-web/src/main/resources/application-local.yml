@@ -1,0 +1,6 @@
+global:
+  base_upload_path: /Users/luyan/Documents/idea/uploads/${database.name}
+
+spring:
+  datasource:
+    password: mysql2425@

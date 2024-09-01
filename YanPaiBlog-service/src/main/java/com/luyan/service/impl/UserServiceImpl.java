@@ -5,27 +5,20 @@ import cn.hutool.crypto.digest.DigestUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.luyan.entity.domain.User;
-import com.luyan.entity.domain.UserInfo;
-import com.luyan.entity.dto.UserInfoDto;
 import com.luyan.entity.exception.ServiceException;
 import com.luyan.entity.utils.ResultCodeEnum;
 import com.luyan.mapper.UserMapper;
-import com.luyan.service.NotifyMsgService;
+import com.luyan.service.ArticleService;
+import com.luyan.service.UserFootService;
 import com.luyan.service.UserInfoService;
-import com.luyan.service.UserRelationService;
 import com.luyan.service.UserService;
 import com.luyan.utils.BaseContext;
 import com.luyan.utils.JwtHelper;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.time.Duration;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -50,9 +43,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     @Resource
     private UserInfoService userInfoService;
     @Resource
-    private NotifyMsgService notifyMsgService;
+    private ArticleService articleService;
     @Resource
-    private UserRelationService userRelationService;
+    private UserFootService userFootService;
 
     // 对密码加盐加密
     private String generatePwd(String pwd, int saltPos) {
@@ -98,30 +91,20 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     }
 
     @Override
-    public Map<String, Object> getIndexUserInfo() {
-        Integer uid = BaseContext.getCurrentId();
-        String photo = userInfoService.getUserInfoByUid(uid).getPhoto();
-        long msgCount = notifyMsgService.getAllUnreadMsgCount(uid);
-        Map<String, Object> map = new HashMap<>();
-        map.put("photo", photo);
-        map.put("msgCount", msgCount);
-        return map;
-    }
-
-    @Override
-    public UserInfoDto getUserInfo() {
-        Integer uid = BaseContext.getCurrentId();
-        UserInfoDto dto = new UserInfoDto();
-        UserInfo userInfo = userInfoService.getUserInfoByUid(uid);
-        long fansNums = userRelationService.getFansNumsByUid(uid);
-        long followedNums = userRelationService.getFollowedNumsByUid(uid);
-        LocalDate localDate = userInfo.getCreateTime().toLocalDate();
-        long jointDays = Duration.between(localDate.atTime(LocalTime.MIN), LocalDateTime.now()).toDays();
-        dto.setFansNums(fansNums);
-        dto.setFollowedNums(followedNums);
-        dto.setJointDays(jointDays + 1);
-        BeanUtils.copyProperties(userInfo, dto);
-        return dto;
+    public Map<String, Long> getAchievement() {
+        int uid = BaseContext.getCurrentId();
+        long publishNum = articleService.getPublishNum(uid);
+        long praiseNum = userFootService.getPraisedNum(uid);
+        long readNum = userFootService.getReadNum(uid);
+        long collectionNum = userFootService.getCollectionNum(uid);
+        return new HashMap<>() {
+            {
+                put("publishNum", publishNum);
+                put("praiseNum", praiseNum);
+                put("readNum", readNum);
+                put("collectionNum", collectionNum);
+            }
+        };
     }
 }
 

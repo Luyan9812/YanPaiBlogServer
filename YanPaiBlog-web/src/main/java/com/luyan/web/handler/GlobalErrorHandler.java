@@ -28,4 +28,9 @@ public class GlobalErrorHandler {
         ).collect(Collectors.joining(";"));
         return R.error(result);
     }
+
+    @ExceptionHandler(Exception.class)
+    public R<Object> exceptionHandler(Exception e) {
+        return R.error(e.getMessage());
+    }
 }

@@ -1,7 +1,11 @@
 package com.luyan.entity.utils;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Data
 public class R<T> {
@@ -27,6 +31,17 @@ public class R<T> {
         return new R<>(ResultCodeEnum.SUCCESS, data);
     }
 
+    public static R<Object> okPairs(Pair ...pairs) {
+        Map<String, Object> map = new HashMap<>() {
+            {
+                for (Pair pair: pairs) {
+                    put(pair.getKey(), pair.getValue());
+                }
+            }
+        };
+        return R.ok(map);
+    }
+
     public static R<Object> error(String message) {
         return new R<>(ResultCodeEnum.OTHER_ERROR.getCode(), message, null);
     }
@@ -37,5 +52,16 @@ public class R<T> {
 
     public static R<Object> error(Integer code, String message) {
         return new R<>(code, message, null);
+    }
+
+    @Getter
+    @AllArgsConstructor
+    public static class Pair {
+        private String key;
+        private Object value;
+
+        public static Pair of(String key, Object value) {
+            return new Pair(key, value);
+        }
     }
 }

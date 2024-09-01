@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.luyan.entity.domain.User;
 import com.luyan.entity.dto.UserInfoDto;
 
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -15,9 +16,6 @@ public interface UserService extends IService<User> {
     String login(String username, String password);
     void register(String username, String password);
 
-    // 获取首页需要的用户信息：仅包含头像和未读消息数量
-    Map<String, Object> getIndexUserInfo();
-
-    // 获取用户的详细信息
-    UserInfoDto getUserInfo();
+    // 获取用户成就信息：发布文章数、文章被点赞数、文章被阅读数、文章被收藏数
+    Map<String, Long> getAchievement();
 }

@@ -1,7 +1,9 @@
 package com.luyan.web.controller;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.luyan.entity.domain.Category;
 import com.luyan.entity.domain.Tag;
+import com.luyan.entity.dto.IndexArticleDto;
 import com.luyan.entity.dto.SaveArticleDto;
 import com.luyan.entity.utils.R;
 import com.luyan.service.ArticleService;
@@ -32,9 +34,16 @@ public class ArticleController {
     }
 
     @GetMapping("tags")
-    public R<List<Tag>> getTagsByCategory(int categoryId) {
+    public R<List<Tag>> getTagsByCategory(Integer categoryId) {
         log.info("getTagsByCategory - {}", categoryId);
         return R.ok(tagService.getTagsByCategory(categoryId));
+    }
+
+    @GetMapping("/list")
+    public R<Object> getArticles(Integer categoryId, Integer currentPage) {
+        log.info("getArticles - {}, {}", categoryId, currentPage);
+        Page<IndexArticleDto> page = articleService.getArticles(categoryId, currentPage);
+        return R.ok(page);
     }
 
     @PostMapping("save")

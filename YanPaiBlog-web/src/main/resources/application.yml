@@ -6,8 +6,9 @@ database:
 
 global:
   salt: π
-  upload_covers: ${global.base_upload_path}/covers/
-  upload_headers: ${global.base_upload_path}/headers/
+  page-size: 10
+  upload-covers: ${global.base-upload-path}/covers/
+  upload-headers: ${global.base-upload-path}/headers/
 
 jwt:
   token:

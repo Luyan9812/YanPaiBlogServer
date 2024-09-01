@@ -16,7 +16,7 @@ public class UserFootServiceImpl extends ServiceImpl<UserFootMapper, UserFoot>
     private UserFootMapper userFootMapper;
 
     @Override
-    public long getPraisedNum(int uid) {
+    public long getPraisedNumByUser(int uid) {
         LambdaQueryWrapper<UserFoot> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(UserFoot::getDocumentUserId, uid);
         wrapper.eq(UserFoot::getPraiseStat, 1);
@@ -24,7 +24,7 @@ public class UserFootServiceImpl extends ServiceImpl<UserFootMapper, UserFoot>
     }
 
     @Override
-    public long getReadNum(int uid) {
+    public long getReadNumByUser(int uid) {
         LambdaQueryWrapper<UserFoot> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(UserFoot::getDocumentUserId, uid);
         wrapper.eq(UserFoot::getReadStat, 1);
@@ -32,9 +32,25 @@ public class UserFootServiceImpl extends ServiceImpl<UserFootMapper, UserFoot>
     }
 
     @Override
-    public long getCollectionNum(int uid) {
+    public long getCollectionNumByUser(int uid) {
         LambdaQueryWrapper<UserFoot> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(UserFoot::getDocumentUserId, uid);
+        wrapper.eq(UserFoot::getCollectionStat, 1);
+        return userFootMapper.selectCount(wrapper);
+    }
+
+    @Override
+    public long getReadNumByArticle(int articleId) {
+        LambdaQueryWrapper<UserFoot> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(UserFoot::getDocumentId, articleId);
+        wrapper.eq(UserFoot::getReadStat, 1);
+        return userFootMapper.selectCount(wrapper);
+    }
+
+    @Override
+    public long getCollectionNumByArticle(int articleId) {
+        LambdaQueryWrapper<UserFoot> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(UserFoot::getDocumentId, articleId);
         wrapper.eq(UserFoot::getCollectionStat, 1);
         return userFootMapper.selectCount(wrapper);
     }

@@ -7,7 +7,7 @@ import lombok.EqualsAndHashCode;
 import java.util.List;
 
 @Data
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode(callSuper = true)
 public class SaveArticleDto extends Article {
     private String content;
     private List<Integer> tags;

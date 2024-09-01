@@ -12,7 +12,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Slf4j
 @Configuration
 public class SpringMvcConfig implements WebMvcConfigurer {
-    @Value("${global.base_upload_path}")
+    @Value("${global.base-upload-path}")
     private String baseUploadPath;
 
     @Resource

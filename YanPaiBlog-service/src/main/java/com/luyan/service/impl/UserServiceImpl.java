@@ -94,9 +94,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     public Map<String, Long> getAchievement() {
         int uid = BaseContext.getCurrentId();
         long publishNum = articleService.getPublishNum(uid);
-        long praiseNum = userFootService.getPraisedNum(uid);
-        long readNum = userFootService.getReadNum(uid);
-        long collectionNum = userFootService.getCollectionNum(uid);
+        long praiseNum = userFootService.getPraisedNumByUser(uid);
+        long readNum = userFootService.getReadNumByUser(uid);
+        long collectionNum = userFootService.getCollectionNumByUser(uid);
         return new HashMap<>() {
             {
                 put("publishNum", publishNum);

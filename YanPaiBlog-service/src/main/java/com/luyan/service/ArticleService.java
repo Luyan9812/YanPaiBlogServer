@@ -1,7 +1,9 @@
 package com.luyan.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.luyan.entity.domain.Article;
+import com.luyan.entity.dto.IndexArticleDto;
 import com.luyan.entity.dto.SaveArticleDto;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -17,4 +19,6 @@ public interface ArticleService extends IService<Article> {
 
     // 保存文章，返回文章 id
     int saveArticle(SaveArticleDto saveArticleDto);
+
+    Page<IndexArticleDto> getArticles(int categoryId, int currentPage);
 }

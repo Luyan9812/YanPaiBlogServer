@@ -4,12 +4,18 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.luyan.entity.domain.UserFoot;
 
 public interface UserFootService extends IService<UserFoot> {
-    // 获取文章被点赞数
-    long getPraisedNum(int uid);
+    // 获取用户 uid 的文章被点赞数
+    long getPraisedNumByUser(int uid);
+
+    // 获取用户 uid 的文章被阅读数
+    long getReadNumByUser(int uid);
+
+    // 获取用户 uid 的文章被收藏数
+    long getCollectionNumByUser(int uid);
 
     // 获取文章被阅读数
-    long getReadNum(int uid);
+    long getReadNumByArticle(int articleId);
 
     // 获取文章被收藏数
-    long getCollectionNum(int uid);
+    long getCollectionNumByArticle(int articleId);
 }

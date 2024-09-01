@@ -7,7 +7,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.luyan.entity.domain.Article;
 import com.luyan.entity.domain.ArticleDetail;
 import com.luyan.entity.domain.ArticleTag;
-import com.luyan.entity.dto.ArticleDto;
+import com.luyan.entity.dto.SaveArticleDto;
 import com.luyan.entity.exception.ServiceException;
 import com.luyan.mapper.ArticleMapper;
 import com.luyan.service.ArticleDetailService;
@@ -75,22 +75,22 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
     }
 
     @Override
-    public int saveArticle(ArticleDto articleDto) {
-        articleDto.setStatus(1);
-        articleDto.setUserId(BaseContext.getCurrentId());
-        articleMapper.insert(articleDto);
+    public int saveArticle(SaveArticleDto saveArticleDto) {
+        saveArticleDto.setStatus(1);
+        saveArticleDto.setUserId(BaseContext.getCurrentId());
+        articleMapper.insert(saveArticleDto);
 
         ArticleDetail articleDetail = new ArticleDetail();
-        articleDetail.setArticleId(articleDto.getId());
-        articleDetail.setContent(articleDto.getContent());
+        articleDetail.setArticleId(saveArticleDto.getId());
+        articleDetail.setContent(saveArticleDto.getContent());
         articleDetailService.save(articleDetail);
 
-        articleDto.getTags().forEach((tagId) -> {
+        saveArticleDto.getTags().forEach((tagId) -> {
             ArticleTag articleTag = new ArticleTag();
             articleTag.setTagId(tagId);
-            articleTag.setArticleId(articleDto.getId());
+            articleTag.setArticleId(saveArticleDto.getId());
             articleTagService.save(articleTag);
         });
-        return articleDto.getId();
+        return saveArticleDto.getId();
     }
 }

@@ -8,7 +8,7 @@ import java.util.List;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class ArticleDto extends Article {
+public class SaveArticleDto extends Article {
     private String content;
     private List<Integer> tags;
 }

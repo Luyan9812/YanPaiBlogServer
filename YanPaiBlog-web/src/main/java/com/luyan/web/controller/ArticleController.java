@@ -2,7 +2,7 @@ package com.luyan.web.controller;
 
 import com.luyan.entity.domain.Category;
 import com.luyan.entity.domain.Tag;
-import com.luyan.entity.dto.ArticleDto;
+import com.luyan.entity.dto.SaveArticleDto;
 import com.luyan.entity.utils.R;
 import com.luyan.service.ArticleService;
 import com.luyan.service.CategoryService;
@@ -12,7 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.HashMap;
 import java.util.List;
 
 @Slf4j
@@ -39,9 +38,9 @@ public class ArticleController {
     }
 
     @PostMapping("save")
-    public R<Object> save(@RequestBody ArticleDto articleDto) {
+    public R<Object> save(@RequestBody SaveArticleDto saveArticleDto) {
         log.info("save");
-        int id = articleService.saveArticle(articleDto);
+        int id = articleService.saveArticle(saveArticleDto);
         return R.okPairs(R.Pair.of("articleId", id));
     }
 

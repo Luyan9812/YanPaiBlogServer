@@ -2,10 +2,8 @@ package com.luyan.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.luyan.entity.domain.Article;
-import com.luyan.entity.dto.ArticleDto;
+import com.luyan.entity.dto.SaveArticleDto;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
 
 public interface ArticleService extends IService<Article> {
     // 获取 uid 对应用户发布的文章数
@@ -18,5 +16,5 @@ public interface ArticleService extends IService<Article> {
     void delete(String path);
 
     // 保存文章，返回文章 id
-    int saveArticle(ArticleDto articleDto);
+    int saveArticle(SaveArticleDto saveArticleDto);
 }

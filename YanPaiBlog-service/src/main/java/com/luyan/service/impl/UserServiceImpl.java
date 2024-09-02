@@ -5,21 +5,26 @@ import cn.hutool.crypto.digest.DigestUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.luyan.entity.domain.User;
+import com.luyan.entity.domain.UserInfo;
+import com.luyan.entity.dto.UserInfoDto;
 import com.luyan.entity.exception.ServiceException;
 import com.luyan.entity.utils.ResultCodeEnum;
 import com.luyan.mapper.UserMapper;
-import com.luyan.service.ArticleService;
-import com.luyan.service.UserFootService;
-import com.luyan.service.UserInfoService;
-import com.luyan.service.UserService;
+import com.luyan.service.*;
 import com.luyan.utils.BaseContext;
 import com.luyan.utils.JwtHelper;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -41,11 +46,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     @Resource
     private UserMapper userMapper;
     @Resource
-    private UserInfoService userInfoService;
-    @Resource
     private ArticleService articleService;
     @Resource
+    private UserInfoService userInfoService;
+    @Resource
     private UserFootService userFootService;
+    @Resource
+    private UserRelationService userRelationService;
 
     // 对密码加盐加密
     private String generatePwd(String pwd, int saltPos) {
@@ -65,11 +72,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     public String login(String username, String password) {
         User user = getUserByUsername(username);
         if (user == null) {  // 用户名不存在
-            throw new ServiceException(ResultCodeEnum.USERNAME_NOT_FOUND_ERROR.getMessage());
+            throw new ServiceException(ResultCodeEnum.USERNAME_NOT_FOUND_ERROR);
         }
         String pwd = generatePwd(password, user.getSaltPos());
         if (!pwd.equals(user.getPassword())) {
-            throw new ServiceException(ResultCodeEnum.PASSWORD_ERROR.getMessage());
+            throw new ServiceException(ResultCodeEnum.PASSWORD_ERROR);
         }
         return jwtHelper.createToken(user.getId());
     }
@@ -78,7 +85,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     public void register(String username, String password) {
         User user = getUserByUsername(username);
         if (user != null) {  // 用户名被占用
-            throw new ServiceException(ResultCodeEnum.USERNAME_EXISTS_ERROR.getMessage());
+            throw new ServiceException(ResultCodeEnum.USERNAME_EXISTS_ERROR);
         }
         user = new User();
         user.setUsername(username);
@@ -105,6 +112,35 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
                 put("collectionNum", collectionNum);
             }
         };
+    }
+
+    @Override
+    public UserInfoDto getAuthorInfo(int authorId) {
+        UserInfoDto dto = new UserInfoDto();
+        UserInfo info = userInfoService.getUserInfoByUid(authorId);
+        BeanUtils.copyProperties(info, dto);
+        LocalDate localDate = info.getCreateTime().toLocalDate();
+        long jointDays = Duration.between(localDate.atTime(LocalTime.MIN), LocalDateTime.now()).toDays();
+        dto.setJointDays(jointDays + 1);
+        dto.setPublishNum(articleService.getPublishNum(authorId));
+        dto.setPraiseNum(userFootService.getPraisedNumByUser(authorId));
+        dto.setCollectionNum(userFootService.getCollectionNumByUser(authorId));
+        dto.setFansNum(userRelationService.getFansNumByUid(authorId));
+        Integer uid = BaseContext.getCurrentId();
+        if (uid != null) {
+            dto.setHasFollowed(userRelationService.hasFollowed(uid, authorId));
+        }
+        return dto;
+    }
+
+    @Override
+    public void changeFollowState(int authorId, boolean followState) {
+        int uid = BaseContext.getCurrentId();
+        if (followState) {
+            userRelationService.follow(uid, authorId);
+        } else {
+            userRelationService.unFollow(uid, authorId);
+        }
     }
 }
 

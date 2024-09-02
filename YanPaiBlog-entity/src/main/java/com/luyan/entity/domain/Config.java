@@ -1,11 +1,13 @@
 package com.luyan.entity.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
 
 @Data
+@JsonIgnoreProperties({"createTime", "updateTime"})
 public class Config {
     private Integer id;
     private Integer type;  // 配置类型：1-首页，2-侧边栏，3-广告位，4-公告

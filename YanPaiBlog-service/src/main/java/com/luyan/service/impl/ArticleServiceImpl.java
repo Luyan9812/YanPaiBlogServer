@@ -8,9 +8,12 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.luyan.entity.domain.Article;
 import com.luyan.entity.domain.ArticleDetail;
 import com.luyan.entity.domain.ArticleTag;
-import com.luyan.entity.dto.IndexArticleDto;
+import com.luyan.entity.domain.UserInfo;
+import com.luyan.entity.dto.ArticleDto;
 import com.luyan.entity.dto.SaveArticleDto;
 import com.luyan.entity.exception.ServiceException;
+import com.luyan.entity.utils.R;
+import com.luyan.entity.utils.ResultCodeEnum;
 import com.luyan.mapper.ArticleMapper;
 import com.luyan.service.*;
 import com.luyan.utils.BaseContext;
@@ -102,23 +105,80 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
         return saveArticleDto.getId();
     }
 
+    private Page<ArticleDto> pageArticleToDto(Page<Article> page) {
+        Page<ArticleDto> result = new Page<>();
+        BeanUtils.copyProperties(page, result, "records");
+        result.setRecords(page.getRecords().stream().map((article) -> {
+            ArticleDto dto = new ArticleDto();
+            BeanUtils.copyProperties(article, dto);
+            dto.setReadNum(userFootService.getReadNumByArticle(article.getId()));
+            dto.setCollectionNum(userFootService.getCollectionNumByArticle(article.getId()));
+            dto.setAuthorInfo(userInfoService.getUserInfoByUid(article.getUserId()));
+            dto.setTags(articleTagService.getTagByArticle(article.getId()));
+            return dto;
+        }).collect(Collectors.toList()));
+        return result;
+    }
+
     @Override
-    public Page<IndexArticleDto> getArticles(int categoryId, int currentPage) {
+    public Page<ArticleDto> getArticles(int categoryId, int currentPage) {
+        if (currentPage <= 0) {
+            throw new ServiceException(String.format("页码 {%d} 错误", currentPage));
+        }
         Page<Article> page = new Page<>(currentPage, pageSize);
         LambdaQueryWrapper<Article> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(categoryId > 0, Article::getCategoryId, categoryId);
         articleMapper.selectPage(page, wrapper);
-        Page<IndexArticleDto> result = new Page<>();
-        BeanUtils.copyProperties(page, result, "records");
-        result.setRecords(page.getRecords().stream().map((article) -> {
-            IndexArticleDto dto = new IndexArticleDto();
-            BeanUtils.copyProperties(article, dto);
-            dto.setReadNums(userFootService.getReadNumByArticle(article.getId()));
-            dto.setCollectionNums(userFootService.getCollectionNumByArticle(article.getId()));
-            dto.setUserInfo(userInfoService.getUserInfoByUid(article.getUserId()));
-            dto.setTags(articleTagService.getTagByArticle(article.getId()));
-            return dto;
-        }).collect(Collectors.toList()));
+        return pageArticleToDto(page);
+    }
+
+    @Override
+    public Page<ArticleDto> getPublishedArticles(int currentPage) {
+        if (currentPage <= 0) {
+            throw new ServiceException(String.format("页码 {%d} 错误", currentPage));
+        }
+        int uid = BaseContext.getCurrentId();
+        Page<Article> page = new Page<>(currentPage, pageSize);
+        LambdaQueryWrapper<Article> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(Article::getUserId, uid);
+        articleMapper.selectPage(page, wrapper);
+        return pageArticleToDto(page);
+    }
+
+    @Override
+    public Page<ArticleDto> getReadArticles(int currentPage) {
+        if (currentPage <= 0) {
+            throw new ServiceException(String.format("页码 {%d} 错误", currentPage));
+        }
+        int uid = BaseContext.getCurrentId();
+        Page<Article> page = new Page<>(currentPage, pageSize);
+        articleMapper.getReadArticles(page, uid);
+        return pageArticleToDto(page);
+    }
+
+    @Override
+    public Page<ArticleDto> getCollectionArticles(int currentPage) {
+        if (currentPage <= 0) {
+            throw new ServiceException(String.format("页码 {%d} 错误", currentPage));
+        }
+        int uid = BaseContext.getCurrentId();
+        Page<Article> page = new Page<>(currentPage, pageSize);
+        articleMapper.getCollectionArticles(page, uid);
+        return pageArticleToDto(page);
+    }
+
+    @Override
+    public ArticleDto getArticleById(int articleId) {
+        Article article = articleMapper.selectById(articleId);
+        if (article == null) {
+            throw new ServiceException(ResultCodeEnum.RESOURCE_NOT_FOUND);
+        }
+        ArticleDetail detail = articleDetailService.getArticleDetail(articleId);
+        UserInfo userInfo = userInfoService.getUserInfoByUid(article.getUserId());
+        ArticleDto result = new ArticleDto();
+        BeanUtils.copyProperties(article, result);
+        result.setContent(detail.getContent());
+        result.setAuthorInfo(userInfo);
         return result;
     }
 }

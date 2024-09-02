@@ -2,9 +2,10 @@ package com.luyan.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.luyan.entity.domain.User;
+import com.luyan.entity.domain.UserInfo;
 import com.luyan.entity.dto.UserInfoDto;
 
-import java.util.Locale;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -18,4 +19,10 @@ public interface UserService extends IService<User> {
 
     // 获取用户成就信息：发布文章数、文章被点赞数、文章被阅读数、文章被收藏数
     Map<String, Long> getAchievement();
+
+    // 获取作者信息
+    UserInfoDto getAuthorInfo(int authorId);
+
+    // 改变当前用户对 authorId 的关注状态
+    void changeFollowState(int authorId, boolean followState);
 }

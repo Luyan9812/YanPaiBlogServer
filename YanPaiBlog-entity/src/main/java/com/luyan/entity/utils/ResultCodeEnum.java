@@ -15,6 +15,7 @@ public enum ResultCodeEnum {
     PASSWORD_ERROR(22, "密码错误"),
 
     OTHER_ERROR(30, "其它错误"),
+    RESOURCE_NOT_FOUND(31, "请求资源不存在"),
     UNKNOWN_ERROR(40, "未知错误");
 
     private final Integer code;

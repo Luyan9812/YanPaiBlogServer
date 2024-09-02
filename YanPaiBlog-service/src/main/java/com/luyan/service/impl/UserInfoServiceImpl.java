@@ -19,6 +19,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -65,14 +66,24 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo>
         Integer uid = BaseContext.getCurrentId();
         UserInfoDto dto = new UserInfoDto();
         UserInfo userInfo = getUserInfoByUid(uid);
-        long fansNums = userRelationService.getFansNumsByUid(uid);
-        long followedNums = userRelationService.getFollowedNumsByUid(uid);
+        long fansNums = userRelationService.getFansNumByUid(uid);
+        long followedNums = userRelationService.getFollowedNumByUid(uid);
         LocalDate localDate = userInfo.getCreateTime().toLocalDate();
         long jointDays = Duration.between(localDate.atTime(LocalTime.MIN), LocalDateTime.now()).toDays();
-        dto.setFansNums(fansNums);
-        dto.setFollowedNums(followedNums);
+        dto.setFansNum(fansNums);
+        dto.setFollowedNum(followedNums);
         dto.setJointDays(jointDays + 1);
         BeanUtils.copyProperties(userInfo, dto);
         return dto;
+    }
+
+    @Override
+    public List<UserInfo> getFansList() {
+        return null;
+    }
+
+    @Override
+    public List<UserInfo> getFollowList() {
+        return null;
     }
 }

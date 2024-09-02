@@ -8,11 +8,15 @@ import lombok.EqualsAndHashCode;
 
 import java.util.List;
 
+/**
+ * 展示文章时的 Article DTO
+ */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class IndexArticleDto extends Article {
-    private Long readNums;
-    private Long collectionNums;
-    private UserInfo userInfo;
+public class ArticleDto extends Article {
+    private Long readNum;
+    private Long collectionNum;
+    private UserInfo authorInfo;
     private List<Tag> tags;
+    private String content;
 }

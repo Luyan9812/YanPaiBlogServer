@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.luyan.entity.domain.UserInfo;
 import com.luyan.entity.dto.UserInfoDto;
 
+import java.util.List;
 import java.util.Map;
 
 public interface UserInfoService extends IService<UserInfo> {
@@ -18,4 +19,10 @@ public interface UserInfoService extends IService<UserInfo> {
 
     // 获取用户的详细信息
     UserInfoDto getUserInfo();
+
+    // 获取当前用户的粉丝列表
+    List<UserInfo> getFansList();
+
+    // 获取当前用户关注列表（当前用户关注的人构成的列表）
+    List<UserInfo> getFollowList();
 }

@@ -1,6 +1,7 @@
 package com.luyan.web.controller;
 
 import com.luyan.entity.domain.User;
+import com.luyan.entity.domain.UserInfo;
 import com.luyan.entity.dto.UserInfoDto;
 import com.luyan.entity.utils.R;
 import com.luyan.entity.utils.ResultCodeEnum;
@@ -11,8 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -42,7 +42,7 @@ public class UserController {
     }
 
     @GetMapping("indexUserInfo")
-    public R<Map<String, Object>> getIndexUserInfo() {
+    public R<Object> getIndexUserInfo() {
         return R.ok(userInfoService.getIndexUserInfo());
     }
 
@@ -51,8 +51,29 @@ public class UserController {
         return R.ok(userInfoService.getUserInfo());
     }
 
+    @GetMapping("author")
+    public R<UserInfoDto> getAuthorInfo(Integer authorId) {
+        return R.ok(userService.getAuthorInfo(authorId));
+    }
+
     @GetMapping("achievement")
     public R<Object> getAchievement() {
         return R.ok(userService.getAchievement());
+    }
+
+    @GetMapping("changeFollowState")
+    public R<Object> changeFollowState(Integer authorId, Boolean followState) {
+        userService.changeFollowState(authorId, followState);
+        return R.ok(null);
+    }
+
+    @GetMapping("fansList")
+    public R<List<UserInfo>> getFansList() {
+        return R.ok(userInfoService.getFansList());
+    }
+
+    @GetMapping("followList")
+    public R<List<UserInfo>> getFollowList() {
+        return R.ok(userInfoService.getFollowList());
     }
 }

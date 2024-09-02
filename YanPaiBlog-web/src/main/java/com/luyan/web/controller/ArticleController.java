@@ -3,7 +3,7 @@ package com.luyan.web.controller;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.luyan.entity.domain.Category;
 import com.luyan.entity.domain.Tag;
-import com.luyan.entity.dto.IndexArticleDto;
+import com.luyan.entity.dto.ArticleDto;
 import com.luyan.entity.dto.SaveArticleDto;
 import com.luyan.entity.utils.R;
 import com.luyan.service.ArticleService;
@@ -40,10 +40,30 @@ public class ArticleController {
     }
 
     @GetMapping("/list")
-    public R<Object> getArticles(Integer categoryId, Integer currentPage) {
+    public R<Page<ArticleDto>> getArticles(Integer categoryId, Integer currentPage) {
         log.info("getArticles - {}, {}", categoryId, currentPage);
-        Page<IndexArticleDto> page = articleService.getArticles(categoryId, currentPage);
+        Page<ArticleDto> page = articleService.getArticles(categoryId, currentPage);
         return R.ok(page);
+    }
+
+    @GetMapping("published")
+    public R<Page<ArticleDto>> getPublishedArticles(Integer currentPage) {
+        return R.ok(articleService.getPublishedArticles(currentPage));
+    }
+
+    @GetMapping("foot")
+    public R<Page<ArticleDto>> getReadArticles(Integer currentPage) {
+        return R.ok(articleService.getReadArticles(currentPage));
+    }
+
+    @GetMapping("collection")
+    public R<Page<ArticleDto>> getCollectionArticles(Integer currentPage) {
+        return R.ok(articleService.getCollectionArticles(currentPage));
+    }
+
+    @GetMapping("/details/{articleId}")
+    public R<ArticleDto> getArticleById(@PathVariable Integer articleId) {
+        return R.ok(articleService.getArticleById(articleId));
     }
 
     @PostMapping("save")

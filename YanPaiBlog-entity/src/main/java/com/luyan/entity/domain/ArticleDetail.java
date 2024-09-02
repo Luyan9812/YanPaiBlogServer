@@ -1,11 +1,13 @@
 package com.luyan.entity.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
 
 @Data
+@JsonIgnoreProperties({"createTime", "updateTime"})
 public class ArticleDetail {
     private Integer id;
     private Integer articleId;
@@ -13,6 +15,4 @@ public class ArticleDetail {
 
     private LocalDateTime createTime;
     private LocalDateTime updateTime;
-
-    private Article article;
 }

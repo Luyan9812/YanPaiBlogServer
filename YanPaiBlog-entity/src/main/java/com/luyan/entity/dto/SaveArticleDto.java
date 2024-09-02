@@ -6,6 +6,9 @@ import lombok.EqualsAndHashCode;
 
 import java.util.List;
 
+/**
+ * 保存文章时的 Article DTO
+ */
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class SaveArticleDto extends Article {

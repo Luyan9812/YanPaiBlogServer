@@ -79,11 +79,13 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo>
 
     @Override
     public List<UserInfo> getFansList() {
-        return null;
+        int uid = BaseContext.getCurrentId();
+        return userInfoMapper.getFansList(uid);
     }
 
     @Override
     public List<UserInfo> getFollowList() {
-        return null;
+        int uid = BaseContext.getCurrentId();
+        return userInfoMapper.getFollowList(uid);
     }
 }

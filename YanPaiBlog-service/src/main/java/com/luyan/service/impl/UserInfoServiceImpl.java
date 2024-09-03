@@ -18,9 +18,11 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo>
@@ -78,14 +80,26 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo>
     }
 
     @Override
-    public List<UserInfo> getFansList() {
+    public List<UserInfoDto> getFansList() {
         int uid = BaseContext.getCurrentId();
-        return userInfoMapper.getFansList(uid);
+        List<UserInfo> infoList = userInfoMapper.getFansList(uid);
+        return infoList.stream().map((info) -> {
+            UserInfoDto dto = new UserInfoDto();
+            BeanUtils.copyProperties(info, dto);
+            dto.setHasFollowed(userRelationService.hasFollowed(uid, info.getUserId()));
+            return dto;
+        }).collect(Collectors.toList());
     }
 
     @Override
-    public List<UserInfo> getFollowList() {
+    public List<UserInfoDto> getFollowList() {
         int uid = BaseContext.getCurrentId();
-        return userInfoMapper.getFollowList(uid);
+        List<UserInfo> followList = userInfoMapper.getFollowList(uid);
+        return followList.stream().map((info) -> {
+            UserInfoDto dto = new UserInfoDto();
+            BeanUtils.copyProperties(info, dto);
+            dto.setHasFollowed(true);
+            return dto;
+        }).collect(Collectors.toList());
     }
 }

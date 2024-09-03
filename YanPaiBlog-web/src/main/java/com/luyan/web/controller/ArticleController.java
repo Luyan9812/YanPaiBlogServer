@@ -1,14 +1,11 @@
 package com.luyan.web.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.luyan.entity.domain.Category;
-import com.luyan.entity.domain.Tag;
 import com.luyan.entity.dto.ArticleDto;
 import com.luyan.entity.dto.SaveArticleDto;
 import com.luyan.entity.utils.R;
 import com.luyan.service.ArticleService;
-import com.luyan.service.CategoryService;
-import com.luyan.service.TagService;
+import com.luyan.service.UserFootService;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -22,22 +19,11 @@ import java.util.List;
 @RequestMapping("article")
 public class ArticleController {
     @Resource
-    private TagService tagService;
-    @Resource
-    private CategoryService categoryService;
-    @Resource
     private ArticleService articleService;
+    @Resource
+    private UserFootService userFootService;
 
-    @GetMapping("categories")
-    public R<List<Category>> getAllCategories() {
-        return R.ok(categoryService.list());
-    }
 
-    @GetMapping("tags")
-    public R<List<Tag>> getTagsByCategory(Integer categoryId) {
-        log.info("getTagsByCategory - {}", categoryId);
-        return R.ok(tagService.getTagsByCategory(categoryId));
-    }
 
     @GetMapping("/list")
     public R<Page<ArticleDto>> getArticles(Integer categoryId, Integer currentPage) {
@@ -48,33 +34,58 @@ public class ArticleController {
 
     @GetMapping("published")
     public R<Page<ArticleDto>> getPublishedArticles(Integer currentPage) {
+        log.info("getPublishedArticles - {}", currentPage);
         return R.ok(articleService.getPublishedArticles(currentPage));
     }
 
     @GetMapping("foot")
     public R<Page<ArticleDto>> getReadArticles(Integer currentPage) {
+        log.info("getReadArticles - {}", currentPage);
         return R.ok(articleService.getReadArticles(currentPage));
     }
 
     @GetMapping("collection")
     public R<Page<ArticleDto>> getCollectionArticles(Integer currentPage) {
+        log.info("getCollectionArticles - {}", currentPage);
         return R.ok(articleService.getCollectionArticles(currentPage));
     }
 
     @GetMapping("/details/{articleId}")
     public R<ArticleDto> getArticleById(@PathVariable Integer articleId) {
+        log.info("getArticleById - {}", articleId);
         return R.ok(articleService.getArticleById(articleId));
+    }
+
+    @GetMapping("hot")
+    public R<List<ArticleDto>> getHotArticles() {
+        log.info("getHotArticles");
+        return R.ok(articleService.getHotArticles());
+    }
+
+    @GetMapping("/changePraiseState")
+    public R<Object> changePraiseState(Integer articleId, Boolean praiseState) {
+        log.info("changePraiseState - {}, {}", articleId, praiseState);
+        userFootService.setArticlePraiseState(articleId, praiseState);
+        return R.ok(null);
+    }
+
+    @GetMapping("/changeCollectionState")
+    public R<Object> changeCollectionState(Integer articleId, Boolean collectionState) {
+        log.info("changeCollectionState - {}, {}", articleId, collectionState);
+        userFootService.setArticleCollectionState(articleId, collectionState);
+        return R.ok(null);
     }
 
     @PostMapping("save")
     public R<Object> save(@RequestBody SaveArticleDto saveArticleDto) {
-        log.info("save");
+        log.info("save - {}", saveArticleDto);
         int id = articleService.saveArticle(saveArticleDto);
         return R.okPairs(R.Pair.of("articleId", id));
     }
 
     @PostMapping("upload/{type}")
     public R<Object> upload(@PathVariable String type, MultipartFile file) {
+        log.info("upload - {}", type);
         if (!type.equals("headers") && !type.equals("covers")) {
             return R.error(String.format("上传路径 /upload/%s 不存在", type));
         }

@@ -12,7 +12,6 @@ import com.luyan.entity.domain.UserInfo;
 import com.luyan.entity.dto.ArticleDto;
 import com.luyan.entity.dto.SaveArticleDto;
 import com.luyan.entity.exception.ServiceException;
-import com.luyan.entity.utils.R;
 import com.luyan.entity.utils.ResultCodeEnum;
 import com.luyan.mapper.ArticleMapper;
 import com.luyan.service.*;
@@ -27,6 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -128,6 +128,8 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
         Page<Article> page = new Page<>(currentPage, pageSize);
         LambdaQueryWrapper<Article> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(categoryId > 0, Article::getCategoryId, categoryId);
+        wrapper.eq(Article::getStatus, 1);
+        wrapper.orderByDesc(Article::getUpdateTime);
         articleMapper.selectPage(page, wrapper);
         return pageArticleToDto(page);
     }
@@ -141,6 +143,8 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
         Page<Article> page = new Page<>(currentPage, pageSize);
         LambdaQueryWrapper<Article> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(Article::getUserId, uid);
+        wrapper.eq(Article::getStatus, 1);
+        wrapper.orderByDesc(Article::getUpdateTime);
         articleMapper.selectPage(page, wrapper);
         return pageArticleToDto(page);
     }
@@ -173,12 +177,24 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
         if (article == null) {
             throw new ServiceException(ResultCodeEnum.RESOURCE_NOT_FOUND);
         }
+        ArticleDto result = new ArticleDto();
+        Integer uid = BaseContext.getCurrentId();
+        if (uid != null) {  // 登录情况下设置文章阅读状态
+            userFootService.setArticleReadState(articleId, true);
+            UserFootService.UserState state = userFootService.getUserStatInArticle(uid, articleId);
+            result.setHasPraised(state.isHasPraised());
+            result.setHasCollection(state.isHasCollection());
+        }
         ArticleDetail detail = articleDetailService.getArticleDetail(articleId);
         UserInfo userInfo = userInfoService.getUserInfoByUid(article.getUserId());
-        ArticleDto result = new ArticleDto();
         BeanUtils.copyProperties(article, result);
         result.setContent(detail.getContent());
         result.setAuthorInfo(userInfo);
         return result;
+    }
+
+    @Override
+    public List<ArticleDto> getHotArticles() {
+        return null;
     }
 }

@@ -19,4 +19,6 @@ public class ArticleDto extends Article {
     private UserInfo authorInfo;
     private List<Tag> tags;
     private String content;
+    private boolean hasPraised;  // 当前用户是否点赞该文章
+    private boolean hasCollection;  // 当前用户是否收藏该文章
 }

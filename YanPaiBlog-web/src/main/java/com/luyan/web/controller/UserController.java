@@ -1,7 +1,6 @@
 package com.luyan.web.controller;
 
 import com.luyan.entity.domain.User;
-import com.luyan.entity.domain.UserInfo;
 import com.luyan.entity.dto.UserInfoDto;
 import com.luyan.entity.utils.R;
 import com.luyan.entity.utils.ResultCodeEnum;
@@ -26,14 +25,14 @@ public class UserController {
 
     @PostMapping("register")
     public R<Object> register(@RequestBody @Validated User user) {
-        log.info("register: {}", user);
+        log.info("register - {}", user);
         userService.register(user.getUsername(), user.getPassword());
         return R.ok(null);
     }
 
     @PostMapping("login")
     public R<Object> login(@RequestBody @Validated User user) {
-        log.info("login: {}", user);
+        log.info("login - {}", user);
         String token = userService.login(user.getUsername(), user.getPassword());
         if (token == null) {
             return R.error(ResultCodeEnum.UNKNOWN_ERROR);
@@ -43,37 +42,44 @@ public class UserController {
 
     @GetMapping("indexUserInfo")
     public R<Object> getIndexUserInfo() {
+        log.info("getIndexUserInfo");
         return R.ok(userInfoService.getIndexUserInfo());
     }
 
     @GetMapping("userInfo")
     public R<UserInfoDto> getUserInfo() {
+        log.info("getUserInfo");
         return R.ok(userInfoService.getUserInfo());
     }
 
     @GetMapping("author")
     public R<UserInfoDto> getAuthorInfo(Integer authorId) {
+        log.info("getAuthorInfo - {}", authorId);
         return R.ok(userService.getAuthorInfo(authorId));
     }
 
     @GetMapping("achievement")
     public R<Object> getAchievement() {
+        log.info("getAchievement");
         return R.ok(userService.getAchievement());
     }
 
     @GetMapping("changeFollowState")
     public R<Object> changeFollowState(Integer authorId, Boolean followState) {
+        log.info("changeFollowState - {}, {}", authorId, followState);
         userService.changeFollowState(authorId, followState);
         return R.ok(null);
     }
 
     @GetMapping("fansList")
-    public R<List<UserInfo>> getFansList() {
+    public R<List<UserInfoDto>> getFansList() {
+        log.info("getFansList");
         return R.ok(userInfoService.getFansList());
     }
 
     @GetMapping("followList")
-    public R<List<UserInfo>> getFollowList() {
+    public R<List<UserInfoDto>> getFollowList() {
+        log.info("getFollowList");
         return R.ok(userInfoService.getFollowList());
     }
 }

@@ -8,6 +8,8 @@ import com.luyan.entity.dto.SaveArticleDto;
 import com.luyan.entity.utils.R;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 public interface ArticleService extends IService<Article> {
     // 获取 uid 对应用户发布的文章数
     long getPublishNum(int uid);
@@ -35,4 +37,7 @@ public interface ArticleService extends IService<Article> {
 
     // 根据 id 查询文章的详细信息
     ArticleDto getArticleById(int articleId);
+
+    // 获取前十的热门文章
+    List<ArticleDto> getHotArticles();
 }

@@ -21,8 +21,8 @@ public interface UserInfoService extends IService<UserInfo> {
     UserInfoDto getUserInfo();
 
     // 获取当前用户的粉丝列表
-    List<UserInfo> getFansList();
+    List<UserInfoDto> getFansList();
 
     // 获取当前用户关注列表（当前用户关注的人构成的列表）
-    List<UserInfo> getFollowList();
+    List<UserInfoDto> getFollowList();
 }

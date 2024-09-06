@@ -12,8 +12,6 @@ import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.Objects;
-
 @Slf4j
 @Service
 public class UserFootServiceImpl extends ServiceImpl<UserFootMapper, UserFoot>

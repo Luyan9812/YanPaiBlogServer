@@ -2,10 +2,8 @@ package com.luyan.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.luyan.entity.domain.User;
-import com.luyan.entity.domain.UserInfo;
 import com.luyan.entity.dto.UserInfoDto;
 
-import java.util.List;
 import java.util.Map;
 
 /**

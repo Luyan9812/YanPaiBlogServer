@@ -1,7 +1,7 @@
 package com.luyan.entity.utils;
 
-import lombok.Getter;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 @Getter
 @AllArgsConstructor

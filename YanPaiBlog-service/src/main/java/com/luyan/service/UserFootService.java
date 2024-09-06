@@ -4,8 +4,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.luyan.entity.domain.UserFoot;
 import lombok.Data;
 
-import java.util.Map;
-
 public interface UserFootService extends IService<UserFoot> {
     // 获取用户 uid 的文章被点赞数
     long getPraisedNumByUser(int uid);

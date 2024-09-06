@@ -1,7 +1,6 @@
 package com.luyan.entity.domain;
 
 import lombok.Data;
-import lombok.Getter;
 
 import java.time.LocalDateTime;
 

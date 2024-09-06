@@ -23,4 +23,14 @@
                        AND collection_stat = 1)
         ORDER BY update_time DESC
     </select>
+
+    <select id="getArticlesByTag" resultType="article">
+        SELECT *
+        FROM article
+        WHERE id IN (SELECT article_id
+                     FROM article_tag
+                     WHERE tag_id = #{tagId})
+        AND status = 1
+        ORDER BY update_time DESC
+    </select>
 </mapper>

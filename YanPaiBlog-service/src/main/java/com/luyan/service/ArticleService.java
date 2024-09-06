@@ -42,4 +42,10 @@ public interface ArticleService extends IService<Article> {
 
     // 根据 id 删除文章
     void deleteArticle(int articleId);
+
+    // 根据标签 id 与页码查询文章列表
+    Page<ArticleDto> getArticlesByTag(Integer tagId, Integer currentPage);
+
+    // 按照标题搜索文章
+    Page<ArticleDto> search(String key, Integer currentPage);
 }

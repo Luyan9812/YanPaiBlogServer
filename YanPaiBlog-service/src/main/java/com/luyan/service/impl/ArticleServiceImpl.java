@@ -223,4 +223,20 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
         articleDetailService.deleteArticle(article.getId());
         articleTagService.deleteTagsByArticle(article.getId());
     }
+
+    @Override
+    public Page<ArticleDto> getArticlesByTag(Integer tagId, Integer currentPage) {
+        Page<Article> page = new Page<>(currentPage, pageSize);
+        articleMapper.getArticlesByTag(page, tagId);
+        return pageArticleToDto(page);
+    }
+
+    @Override
+    public Page<ArticleDto> search(String key, Integer currentPage) {
+        Page<Article> page = new Page<>(currentPage, pageSize);
+        LambdaQueryWrapper<Article> wrapper = new LambdaQueryWrapper<>();
+        wrapper.like(Article::getTitle, key);
+        articleMapper.selectPage(page, wrapper);
+        return pageArticleToDto(page);
+    }
 }

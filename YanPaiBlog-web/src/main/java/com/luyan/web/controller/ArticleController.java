@@ -47,6 +47,18 @@ public class ArticleController {
         return R.ok(articleService.getCollectionArticles(currentPage));
     }
 
+    @GetMapping("byTag")
+    public R<Page<ArticleDto>> getArticlesByTag(Integer tagId, Integer currentPage) {
+        log.info("getArticlesByTag - {}, {}", tagId, currentPage);
+        return R.ok(articleService.getArticlesByTag(tagId, currentPage));
+    }
+
+    @PostMapping("search")
+    public R<Page<ArticleDto>> search(String title, Integer currentPage) {
+        log.info("search - {}", title);
+        return R.ok(articleService.search(title, currentPage));
+    }
+
     @GetMapping("/details/{articleId}")
     public R<ArticleDto> getArticleById(@PathVariable Integer articleId) {
         log.info("getArticleById - {}", articleId);

@@ -24,11 +24,10 @@ public class ArticleController {
     private UserFootService userFootService;
 
 
-
     @GetMapping("/list")
     public R<Page<ArticleDto>> getArticles(Integer categoryId, Integer currentPage) {
         log.info("getArticles - {}, {}", categoryId, currentPage);
-        Page<ArticleDto> page = articleService.getArticles(categoryId, currentPage);
+        Page<ArticleDto> page = articleService.getArticlesByCategory(categoryId, currentPage);
         return R.ok(page);
     }
 
@@ -57,7 +56,7 @@ public class ArticleController {
     }
 
     @GetMapping("hot")
-    public R<List<ArticleDto>> getHotArticles() {
+    public R<Object> getHotArticles() {
         log.info("getHotArticles");
         return R.ok(articleService.getHotArticles());
     }
@@ -83,6 +82,12 @@ public class ArticleController {
         return R.okPairs(R.Pair.of("articleId", id));
     }
 
+    @DeleteMapping("{articleId}")
+    public R<Object> delete(@PathVariable Integer articleId) {
+        articleService.deleteArticle(articleId);
+        return R.ok(null);
+    }
+
     @PostMapping("upload/{type}")
     public R<Object> upload(@PathVariable String type, MultipartFile file) {
         log.info("upload - {}", type);
@@ -96,7 +101,7 @@ public class ArticleController {
     @GetMapping("upload/delete")
     public R<Object> delete(String path) {
         log.info("delete - {}", path);
-        articleService.delete(path);
+        articleService.fileDelete(path);
         return R.ok(null);
     }
 }

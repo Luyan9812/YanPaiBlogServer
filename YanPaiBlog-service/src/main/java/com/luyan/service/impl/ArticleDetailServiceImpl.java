@@ -20,4 +20,11 @@ public class ArticleDetailServiceImpl extends ServiceImpl<ArticleDetailMapper, A
         wrapper.eq(ArticleDetail::getArticleId, articleId);
         return articleDetailMapper.selectOne(wrapper);
     }
+
+    @Override
+    public void deleteArticle(int articleId) {
+        LambdaQueryWrapper<ArticleDetail> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(ArticleDetail::getArticleId, articleId);
+        articleDetailMapper.delete(wrapper);
+    }
 }

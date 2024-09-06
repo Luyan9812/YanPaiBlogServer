@@ -2,6 +2,7 @@ package com.luyan.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.luyan.entity.domain.Article;
 import com.luyan.entity.domain.UserFoot;
 import com.luyan.mapper.ArticleMapper;
 import com.luyan.mapper.UserFootMapper;
@@ -10,6 +11,8 @@ import com.luyan.utils.BaseContext;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import java.util.Objects;
 
 @Slf4j
 @Service
@@ -20,6 +23,32 @@ public class UserFootServiceImpl extends ServiceImpl<UserFootMapper, UserFoot>
     private ArticleMapper articleMapper;
     @Resource
     private UserFootMapper userFootMapper;
+
+    private UserFoot getUserFoot(int uid, int articleId) {
+        LambdaQueryWrapper<UserFoot> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(UserFoot::getUserId, uid);
+        wrapper.eq(UserFoot::getDocumentId, articleId);
+        return userFootMapper.selectOne(wrapper);
+    }
+
+    private UserFoot getOrCreateUserFoot(int articleId) {
+        int uid = BaseContext.getCurrentId();
+        UserFoot userFoot = getUserFoot(uid, articleId);
+        if (userFoot == null) {
+            userFoot = new UserFoot();
+            userFoot.setUserId(uid);
+            userFoot.setDocumentId(articleId);
+            Integer documentUserId = articleMapper.selectById(articleId).getUserId();
+            userFoot.setDocumentUserId(documentUserId);
+        }
+        return userFoot;
+    }
+
+    private void modifyArticleScore(int articleId, int plus) {
+        Article article = articleMapper.selectById(articleId);
+        article.setHotScore(article.getHotScore() + plus);
+        articleMapper.updateById(article);
+    }
 
     @Override
     public long getPraisedNumByUser(int uid) {
@@ -61,13 +90,6 @@ public class UserFootServiceImpl extends ServiceImpl<UserFootMapper, UserFoot>
         return userFootMapper.selectCount(wrapper);
     }
 
-    private UserFoot getUserFoot(int uid, int articleId) {
-        LambdaQueryWrapper<UserFoot> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(UserFoot::getUserId, uid);
-        wrapper.eq(UserFoot::getDocumentId, articleId);
-        return userFootMapper.selectOne(wrapper);
-    }
-
     @Override
     public UserState getUserStatInArticle(int uid, int articleId) {
         UserFoot userFoot = getUserFoot(uid, articleId);
@@ -78,40 +100,39 @@ public class UserFootServiceImpl extends ServiceImpl<UserFootMapper, UserFoot>
         return state;
     }
 
-    private void setUserState(int articleId, int readState, int praiseState, int collectionState) {
-        int uid = BaseContext.getCurrentId();
-        UserFoot userFoot = getUserFoot(uid, articleId);
-        if (userFoot == null) {
-            userFoot = new UserFoot();
-            userFoot.setUserId(uid);
-            userFoot.setDocumentId(articleId);
-            Integer documentUserId = articleMapper.selectById(articleId).getUserId();
-            userFoot.setDocumentUserId(documentUserId);
-        }
-        if (readState >= 0) {
-            userFoot.setReadStat(readState);
-        }
-        if (praiseState >= 0) {
-            userFoot.setPraiseStat(praiseState);
-        }
-        if (collectionState >= 0) {
-            userFoot.setCollectionStat(collectionState);
-        }
-        userFootMapper.insertOrUpdate(userFoot);
-    }
-
     @Override
     public void setArticleReadState(int articleId, boolean readState) {
-        setUserState(articleId, readState ? 1 : 0, -1, -1);
+        Integer value = readState ? 1 : 0;
+        UserFoot userFoot = getOrCreateUserFoot(articleId);
+        if (value.equals(userFoot.getReadStat())) {
+            return;
+        }
+        userFoot.setReadStat(value);
+        userFootMapper.insertOrUpdate(userFoot);
+        modifyArticleScore(articleId, readState ? 1 : -1);
     }
 
     @Override
     public void setArticlePraiseState(int articleId, boolean praiseState) {
-        setUserState(articleId, -1, praiseState ? 1 : 0, -1);
+        Integer value = praiseState ? 1 : 0;
+        UserFoot userFoot = getOrCreateUserFoot(articleId);
+        if (value.equals(userFoot.getPraiseStat())) {
+            return;
+        }
+        userFoot.setPraiseStat(value);
+        userFootMapper.insertOrUpdate(userFoot);
+        modifyArticleScore(articleId, praiseState ? 2 : -2);
     }
 
     @Override
     public void setArticleCollectionState(int articleId, boolean collectionState) {
-        setUserState(articleId, -1, -1, collectionState ? 1 : 0);
+        Integer value = collectionState ? 1 : 0;
+        UserFoot userFoot = getOrCreateUserFoot(articleId);
+        if (value.equals(userFoot.getCollectionStat())) {
+            return;
+        }
+        userFoot.setCollectionStat(value);
+        userFootMapper.insertOrUpdate(userFoot);
+        modifyArticleScore(articleId, collectionState ? 3 : -3);
     }
 }

@@ -1,5 +1,6 @@
 package com.luyan.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.luyan.entity.domain.ArticleTag;
 import com.luyan.entity.domain.Tag;
@@ -19,5 +20,12 @@ public class ArticleTagServiceImpl extends ServiceImpl<ArticleTagMapper, Article
     @Override
     public List<Tag> getTagByArticle(int articleId) {
         return articleTagMapper.getTagByArticle(articleId);
+    }
+
+    @Override
+    public void deleteTagsByArticle(int articleId) {
+        LambdaQueryWrapper<ArticleTag> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(ArticleTag::getArticleId, articleId);
+        articleTagMapper.delete(wrapper);
     }
 }

@@ -7,7 +7,7 @@ CREATE TABLE `article`
     `summary`      varchar(300) NOT NULL DEFAULT '' COMMENT '文章摘要',
     `category_id`  int unsigned NOT NULL DEFAULT '0' COMMENT '类目ID',
     `status`       tinyint      NOT NULL DEFAULT '0' COMMENT '状态：0-未发布，1-已发布',
-    `score`        int unsigned NOT NULL DEFAULT '0' COMMENT '热榜排序，阅读+1，点赞+2，收藏+3',
+    `hot_score`    int unsigned NOT NULL DEFAULT '0' COMMENT '热榜排序，阅读+1，点赞+2，收藏+3',
     `create_time`  timestamp    NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `update_time`  timestamp    NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后更新时间',
     PRIMARY KEY (`id`),

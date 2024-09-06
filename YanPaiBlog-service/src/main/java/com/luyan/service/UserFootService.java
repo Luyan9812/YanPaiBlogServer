@@ -2,7 +2,6 @@ package com.luyan.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.luyan.entity.domain.UserFoot;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.util.Map;

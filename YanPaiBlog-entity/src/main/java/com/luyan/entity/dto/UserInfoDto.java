@@ -15,4 +15,5 @@ public class UserInfoDto extends UserInfo {
     private long readNum;  // 所有文章被阅读数
     private long collectionNum;  // 所有文章被收藏数
     private boolean hasFollowed;  // 当前登录用户是否关注了该用户
+    private boolean myself;  // 作者是否是当前用户本人
 }

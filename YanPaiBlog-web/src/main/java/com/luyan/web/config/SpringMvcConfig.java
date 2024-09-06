@@ -1,6 +1,7 @@
 package com.luyan.web.config;
 
 import com.luyan.web.interceptor.LoginInterceptor;
+import com.luyan.web.interceptor.TokenInterceptor;
 import com.luyan.web.utils.JacksonObjectMapper;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
@@ -21,14 +22,17 @@ public class SpringMvcConfig implements WebMvcConfigurer {
     private String baseUploadPath;
 
     @Resource
+    private TokenInterceptor tokenInterceptor;
+    @Resource
     private LoginInterceptor loginInterceptor;
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(tokenInterceptor);
         registry.addInterceptor(loginInterceptor).excludePathPatterns(
                 "/headers/**", "/upload/**",
                 "/user/login", "/user/register", "/user/author",
-                "/article/list", "/article/details/*",
+                "/article/list", "/article/details/*", "/article/hot",
                 "/category/haveArticles"
         );
     }

@@ -14,6 +14,7 @@ public class Article {
     private String summary;
     private Integer categoryId;
     private Integer status;  // 状态：0-未发布，1-已发布，2-配置文章（不在文章列表显示）
+    private Integer hotScore;  // 热门分数，阅读+1，点赞+2，收藏+3
 
     private LocalDateTime createTime;
     private LocalDateTime updateTime;

@@ -24,7 +24,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -127,7 +126,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         dto.setCollectionNum(userFootService.getCollectionNumByUser(authorId));
         dto.setFansNum(userRelationService.getFansNumByUid(authorId));
         Integer uid = BaseContext.getCurrentId();
+        log.info("userinfo: {}, {}", uid, authorId);
         if (uid != null) {
+            dto.setMyself(uid.equals(authorId));
             dto.setHasFollowed(userRelationService.hasFollowed(uid, authorId));
         }
         return dto;

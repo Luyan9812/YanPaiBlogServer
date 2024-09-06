@@ -8,12 +8,12 @@
     <property name="autoIncrement" value="true"/>
 
     <!--  初始化表结构  -->
-    <changeSet id="00000000000001" author="YiHui">
+    <changeSet id="00000000000001" author="luyan">
         <sqlFile dbms="mysql" endDelimiter=";" encoding="UTF-8" path="liquibase/data/init_schema_240820.sql"/>
     </changeSet>
 
     <!--  初始化数据  -->
-    <changeSet id="00000000000002" author="YiHui">
+    <changeSet id="00000000000002" author="luyan">
         <sqlFile dbms="mysql" endDelimiter=";" encoding="UTF-8" path="liquibase/data/init_data_240820.sql"/>
     </changeSet>
 

@@ -26,6 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -54,6 +55,22 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
     @Resource
     private UserInfoService userInfoService;
 
+
+    private Page<ArticleDto> pageArticleToDto(Page<Article> page) {
+        Page<ArticleDto> result = new Page<>();
+        BeanUtils.copyProperties(page, result, "records");
+        result.setRecords(page.getRecords().stream().map((article) -> {
+            ArticleDto dto = new ArticleDto();
+            BeanUtils.copyProperties(article, dto);
+            dto.setReadNum(userFootService.getReadNumByArticle(article.getId()));
+            dto.setCollectionNum(userFootService.getCollectionNumByArticle(article.getId()));
+            dto.setAuthorInfo(userInfoService.getUserInfoByUid(article.getUserId()));
+            dto.setTags(articleTagService.getTagByArticle(article.getId()));
+            return dto;
+        }).collect(Collectors.toList()));
+        return result;
+    }
+
     @Override
     public long getPublishNum(int uid) {
         LambdaQueryWrapper<Article> wrapper = new LambdaQueryWrapper<>();
@@ -78,7 +95,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
     }
 
     @Override
-    public void delete(String path) {
+    public void fileDelete(String path) {
         String key = "upload/";
         String fileName = path.substring(path.indexOf(key) + key.length());
         File file = new File(baseUploadPath, fileName);
@@ -105,23 +122,8 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
         return saveArticleDto.getId();
     }
 
-    private Page<ArticleDto> pageArticleToDto(Page<Article> page) {
-        Page<ArticleDto> result = new Page<>();
-        BeanUtils.copyProperties(page, result, "records");
-        result.setRecords(page.getRecords().stream().map((article) -> {
-            ArticleDto dto = new ArticleDto();
-            BeanUtils.copyProperties(article, dto);
-            dto.setReadNum(userFootService.getReadNumByArticle(article.getId()));
-            dto.setCollectionNum(userFootService.getCollectionNumByArticle(article.getId()));
-            dto.setAuthorInfo(userInfoService.getUserInfoByUid(article.getUserId()));
-            dto.setTags(articleTagService.getTagByArticle(article.getId()));
-            return dto;
-        }).collect(Collectors.toList()));
-        return result;
-    }
-
     @Override
-    public Page<ArticleDto> getArticles(int categoryId, int currentPage) {
+    public Page<ArticleDto> getArticlesByCategory(int categoryId, int currentPage) {
         if (currentPage <= 0) {
             throw new ServiceException(String.format("页码 {%d} 错误", currentPage));
         }
@@ -194,7 +196,31 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
     }
 
     @Override
-    public List<ArticleDto> getHotArticles() {
-        return null;
+    public List<Object> getHotArticles() {
+        Page<Article> page = new Page<>(1, 10);
+        LambdaQueryWrapper<Article> wrapper = new LambdaQueryWrapper<>();
+        wrapper.orderByDesc(Article::getHotScore);
+        articleMapper.selectPage(page, wrapper);
+        return page.getRecords().stream().map((article -> new HashMap<String, Object>() {
+            {
+                put("id", article.getId());
+                put("title", article.getTitle());
+            }
+        })).collect(Collectors.toList());
+    }
+
+    @Override
+    public void deleteArticle(int articleId) {
+        int uid = BaseContext.getCurrentId();
+        LambdaQueryWrapper<Article> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(Article::getUserId, uid);
+        wrapper.eq(Article::getId, articleId);
+        Article article = articleMapper.selectOne(wrapper);
+        if (article == null) {
+            throw new ServiceException(ResultCodeEnum.RESOURCE_NOT_FOUND);
+        }
+        articleMapper.deleteById(article.getId());
+        articleDetailService.deleteArticle(article.getId());
+        articleTagService.deleteTagsByArticle(article.getId());
     }
 }

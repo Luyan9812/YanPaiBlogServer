@@ -95,11 +95,19 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
     }
 
     @Override
-    public void fileDelete(String path) {
+    public void deleteFile(String path) {
         String key = "upload/";
         String fileName = path.substring(path.indexOf(key) + key.length());
         File file = new File(baseUploadPath, fileName);
         FileUtil.del(file);
+    }
+
+    @Override
+    public void deleteFiles(List<String> paths) {
+        paths.forEach((path) -> {
+            if (!path.contains("upload")) return;
+            deleteFile(path);
+        });
     }
 
     @Override

@@ -17,7 +17,10 @@ public interface ArticleService extends IService<Article> {
     String uploadFile(String type, MultipartFile file);
 
     // 删除文件，传过来的是一个 URL
-    void fileDelete(String path);
+    void deleteFile(String path);
+
+    // 删除文件列表
+    void deleteFiles(List<String> paths);
 
     // 保存文章，返回文章 id
     int saveArticle(SaveArticleDto saveArticleDto);

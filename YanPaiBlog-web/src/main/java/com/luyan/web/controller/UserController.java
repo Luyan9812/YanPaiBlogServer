@@ -1,6 +1,7 @@
 package com.luyan.web.controller;
 
 import com.luyan.entity.domain.User;
+import com.luyan.entity.domain.UserInfo;
 import com.luyan.entity.dto.UserInfoDto;
 import com.luyan.entity.utils.R;
 import com.luyan.entity.utils.ResultCodeEnum;
@@ -50,6 +51,13 @@ public class UserController {
     public R<UserInfoDto> getUserInfo() {
         log.info("getUserInfo");
         return R.ok(userInfoService.getUserInfo());
+    }
+
+    @PutMapping("update")
+    public R<Object> updateUserInfo(@RequestBody UserInfo userInfo) {
+        log.info("updateUserInfo - {}", userInfo);
+        userInfoService.updateUserInfo(userInfo);
+        return R.ok(null);
     }
 
     @GetMapping("author")

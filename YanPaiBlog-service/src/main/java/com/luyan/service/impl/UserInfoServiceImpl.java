@@ -2,6 +2,7 @@ package com.luyan.service.impl;
 
 import cn.hutool.core.util.RandomUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.luyan.entity.domain.UserInfo;
 import com.luyan.entity.dto.UserInfoDto;
@@ -100,5 +101,13 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo>
             dto.setHasFollowed(true);
             return dto;
         }).collect(Collectors.toList());
+    }
+
+    @Override
+    public void updateUserInfo(UserInfo userInfo) {
+        userInfo.setUserId(BaseContext.getCurrentId());
+        LambdaUpdateWrapper<UserInfo> wrapper = new LambdaUpdateWrapper<>();
+        wrapper.eq(UserInfo::getUserId, userInfo.getUserId());
+        userInfoMapper.update(userInfo, wrapper);
     }
 }

@@ -11,6 +11,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 @Slf4j
 @CrossOrigin
 @RestController
@@ -111,7 +113,14 @@ public class ArticleController {
     @GetMapping("upload/delete")
     public R<Object> delete(String path) {
         log.info("delete - {}", path);
-        articleService.fileDelete(path);
+        articleService.deleteFile(path);
+        return R.ok(null);
+    }
+
+    @DeleteMapping("upload/deleteFiles")
+    public R<Object> deleteFiles(@RequestBody List<String> paths) {
+        log.info("deleteFiles - {}", paths);
+        articleService.deleteFiles(paths);
         return R.ok(null);
     }
 }

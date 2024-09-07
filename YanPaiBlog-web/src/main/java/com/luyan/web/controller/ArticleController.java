@@ -123,4 +123,11 @@ public class ArticleController {
         articleService.deleteFiles(paths);
         return R.ok(null);
     }
+
+    @PutMapping("update")
+    public R<Object> updateArticle(@RequestBody SaveArticleDto saveArticleDto) {
+        log.info("updateArticle - {}", saveArticleDto);
+        articleService.updateArticle(saveArticleDto);
+        return R.ok(null);
+    }
 }

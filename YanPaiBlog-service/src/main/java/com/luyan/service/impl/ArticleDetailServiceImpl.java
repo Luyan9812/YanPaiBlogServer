@@ -1,6 +1,7 @@
 package com.luyan.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.luyan.entity.domain.ArticleDetail;
 import com.luyan.mapper.ArticleDetailMapper;
@@ -26,5 +27,12 @@ public class ArticleDetailServiceImpl extends ServiceImpl<ArticleDetailMapper, A
         LambdaQueryWrapper<ArticleDetail> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(ArticleDetail::getArticleId, articleId);
         articleDetailMapper.delete(wrapper);
+    }
+
+    @Override
+    public void updateArticleDetail(ArticleDetail articleDetail) {
+        LambdaUpdateWrapper<ArticleDetail> wrapper = new LambdaUpdateWrapper<>();
+        wrapper.eq(ArticleDetail::getArticleId, articleDetail.getArticleId());
+        articleDetailMapper.update(articleDetail, wrapper);
     }
 }

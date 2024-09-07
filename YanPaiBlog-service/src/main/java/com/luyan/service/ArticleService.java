@@ -25,6 +25,9 @@ public interface ArticleService extends IService<Article> {
     // 保存文章，返回文章 id
     int saveArticle(SaveArticleDto saveArticleDto);
 
+    // 更新文章
+    void updateArticle(SaveArticleDto saveArticleDto);
+
     // 根据类别和页码查询文章列表
     Page<ArticleDto> getArticlesByCategory(int categoryId, int currentPage);
 

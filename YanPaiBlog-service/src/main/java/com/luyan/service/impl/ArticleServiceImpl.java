@@ -131,6 +131,30 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
     }
 
     @Override
+    public void updateArticle(SaveArticleDto saveArticleDto) {
+        Article article = new Article();
+        article.setId(saveArticleDto.getId());
+        article.setTitle(saveArticleDto.getTitle());
+        article.setPicture(saveArticleDto.getPicture());
+        article.setSummary(saveArticleDto.getSummary());
+        article.setCategoryId(saveArticleDto.getCategoryId());
+        articleMapper.updateById(article);
+
+        ArticleDetail articleDetail = new ArticleDetail();
+        articleDetail.setArticleId(saveArticleDto.getId());
+        articleDetail.setContent(saveArticleDto.getContent());
+        articleDetailService.updateArticleDetail(articleDetail);
+
+        articleTagService.deleteTagsByArticle(saveArticleDto.getId());
+        saveArticleDto.getTags().forEach((tagId) -> {
+            ArticleTag articleTag = new ArticleTag();
+            articleTag.setTagId(tagId);
+            articleTag.setArticleId(saveArticleDto.getId());
+            articleTagService.save(articleTag);
+        });
+    }
+
+    @Override
     public Page<ArticleDto> getArticlesByCategory(int categoryId, int currentPage) {
         if (currentPage <= 0) {
             throw new ServiceException(String.format("页码 {%d} 错误", currentPage));
@@ -200,6 +224,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
         BeanUtils.copyProperties(article, result);
         result.setContent(detail.getContent());
         result.setAuthorInfo(userInfo);
+        result.setTags(articleTagService.getTagByArticle(articleId));
         return result;
     }
 

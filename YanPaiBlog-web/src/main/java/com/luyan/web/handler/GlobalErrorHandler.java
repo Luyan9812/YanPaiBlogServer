@@ -17,7 +17,11 @@ import java.util.stream.Collectors;
 public class GlobalErrorHandler {
     @ExceptionHandler(ServiceException.class)
     public R<Object> serviceExceptionHandler(ServiceException e) {
-        return R.error(e.getMessage());
+        if (e.getError() != null) {
+            return R.error(e.getError());
+        } else {
+            return R.error(e.getMessage());
+        }
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -31,6 +35,7 @@ public class GlobalErrorHandler {
 
     @ExceptionHandler(Exception.class)
     public R<Object> exceptionHandler(Exception e) {
+        e.printStackTrace();
         return R.error(e.getMessage());
     }
 }

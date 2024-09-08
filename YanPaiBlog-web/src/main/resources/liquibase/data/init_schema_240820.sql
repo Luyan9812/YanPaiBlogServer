@@ -55,7 +55,7 @@ CREATE TABLE `notify_msg`
     `notify_user_id`  int unsigned NOT NULL DEFAULT '0' COMMENT '通知的用户id',
     `operate_user_id` int unsigned NOT NULL DEFAULT '0' COMMENT '触发这个通知的用户id',
     `msg`             varchar(1024) NOT NULL DEFAULT '' COMMENT '消息内容',
-    `type`            tinyint unsigned NOT NULL DEFAULT '0' COMMENT '类型: 0-系统 1-点赞 2-收藏 3-关注',
+    `type`            tinyint unsigned NOT NULL DEFAULT '0' COMMENT '类型: 0-点赞 1-收藏 2-关注 3-系统',
     `state`           tinyint unsigned NOT NULL DEFAULT '0' COMMENT '阅读状态: 0-未读，1-已读',
     `create_time`     timestamp     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `update_time`     timestamp     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后更新时间',

@@ -2,6 +2,7 @@ package com.luyan.web.controller;
 
 import com.luyan.entity.domain.User;
 import com.luyan.entity.domain.UserInfo;
+import com.luyan.entity.dto.MsgDto;
 import com.luyan.entity.dto.UserInfoDto;
 import com.luyan.entity.utils.R;
 import com.luyan.entity.utils.ResultCodeEnum;
@@ -89,5 +90,11 @@ public class UserController {
     public R<List<UserInfoDto>> getFollowList() {
         log.info("getFollowList");
         return R.ok(userInfoService.getFollowList());
+    }
+
+    @GetMapping("messages")
+    public R<List<MsgDto>> getMessage(Integer type) {
+        log.info("getMessage - {}", type);
+        return R.ok(userService.getMessages(type));
     }
 }

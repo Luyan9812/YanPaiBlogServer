@@ -4,8 +4,10 @@ import cn.hutool.core.util.RandomUtil;
 import cn.hutool.crypto.digest.DigestUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.luyan.entity.domain.NotifyMsg;
 import com.luyan.entity.domain.User;
 import com.luyan.entity.domain.UserInfo;
+import com.luyan.entity.dto.MsgDto;
 import com.luyan.entity.dto.UserInfoDto;
 import com.luyan.entity.exception.ServiceException;
 import com.luyan.entity.utils.ResultCodeEnum;
@@ -24,7 +26,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
 * @author luyan
@@ -52,6 +56,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     private UserFootService userFootService;
     @Resource
     private UserRelationService userRelationService;
+    @Resource
+    private NotifyMsgService notifyMsgService;
 
     // 对密码加盐加密
     private String generatePwd(String pwd, int saltPos) {
@@ -142,6 +148,26 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         } else {
             userRelationService.unFollow(uid, authorId);
         }
+    }
+
+    @Override
+    public List<MsgDto> getMessages(Integer type) {
+        NotifyMsgService.MsgType msgType = NotifyMsgService.MsgType.fromCode(type);
+        List<NotifyMsg> notifyMsgList = notifyMsgService.getMessageByType(msgType);
+        return notifyMsgList.stream().map((msg -> {
+            MsgDto dto = new MsgDto();
+            dto.setId(msg.getId());
+            dto.setMsg(msg.getMsg());
+            dto.setState(msg.getState());
+            dto.setUpdateTime(msg.getUpdateTime());
+            if (msg.getOperateUserId() == 0) {  // 系统消息
+                dto.setPhoto("/headers/yan_pai.jpg");
+            } else {
+                UserInfo info = userInfoService.getUserInfoByUid(msg.getOperateUserId());
+                dto.setPhoto(info.getPhoto());
+            }
+            return dto;
+        })).collect(Collectors.toList());
     }
 }
 

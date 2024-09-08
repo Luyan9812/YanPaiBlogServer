@@ -2,8 +2,10 @@ package com.luyan.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.luyan.entity.domain.User;
+import com.luyan.entity.dto.MsgDto;
 import com.luyan.entity.dto.UserInfoDto;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -23,4 +25,7 @@ public interface UserService extends IService<User> {
 
     // 改变当前用户对 authorId 的关注状态
     void changeFollowState(int authorId, boolean followState);
+
+    // 根据消息类别获取消息
+    List<MsgDto> getMessages(Integer type);
 }

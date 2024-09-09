@@ -16,6 +16,7 @@ import com.luyan.entity.utils.ResultCodeEnum;
 import com.luyan.mapper.ArticleMapper;
 import com.luyan.service.*;
 import com.luyan.utils.BaseContext;
+import com.luyan.utils.ImagePathUtil;
 import jakarta.annotation.Resource;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -118,7 +119,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
 
         ArticleDetail articleDetail = new ArticleDetail();
         articleDetail.setArticleId(saveArticleDto.getId());
-        articleDetail.setContent(saveArticleDto.getContent());
+        articleDetail.setContent(ImagePathUtil.removeDomain(saveArticleDto.getContent()));
         articleDetailService.save(articleDetail);
 
         saveArticleDto.getTags().forEach((tagId) -> {
@@ -142,7 +143,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
 
         ArticleDetail articleDetail = new ArticleDetail();
         articleDetail.setArticleId(saveArticleDto.getId());
-        articleDetail.setContent(saveArticleDto.getContent());
+        articleDetail.setContent(ImagePathUtil.removeDomain(saveArticleDto.getContent()));
         articleDetailService.updateArticleDetail(articleDetail);
 
         articleTagService.deleteTagsByArticle(saveArticleDto.getId());
@@ -232,6 +233,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
     public List<Object> getHotArticles() {
         Page<Article> page = new Page<>(1, 10);
         LambdaQueryWrapper<Article> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(Article::getStatus, 1);
         wrapper.orderByDesc(Article::getHotScore);
         articleMapper.selectPage(page, wrapper);
         return page.getRecords().stream().map((article -> new HashMap<String, Object>() {

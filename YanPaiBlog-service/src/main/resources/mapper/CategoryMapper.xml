@@ -8,6 +8,7 @@
         SELECT *
         FROM category
         WHERE id IN (SELECT DISTINCT category_id
-                     FROM article)
+                     FROM article WHERE status = 1)
+        ORDER BY id
     </select>
 </mapper>

@@ -235,6 +235,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
         LambdaQueryWrapper<Article> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(Article::getStatus, 1);
         wrapper.orderByDesc(Article::getHotScore);
+        wrapper.orderByDesc(Article::getUpdateTime);
         articleMapper.selectPage(page, wrapper);
         return page.getRecords().stream().map((article -> new HashMap<String, Object>() {
             {

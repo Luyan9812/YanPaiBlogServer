@@ -164,7 +164,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
         LambdaQueryWrapper<Article> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(categoryId > 0, Article::getCategoryId, categoryId);
         wrapper.eq(Article::getStatus, 1);
-        wrapper.orderByDesc(Article::getUpdateTime);
+        wrapper.orderByDesc(Article::getHotScore, Article::getUpdateTime);
         articleMapper.selectPage(page, wrapper);
         return pageArticleToDto(page);
     }

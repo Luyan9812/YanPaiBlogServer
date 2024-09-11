@@ -56,4 +56,6 @@ public interface NotifyMsgService extends IService<NotifyMsg> {
 
     // 根据消息类别获取消息
     List<NotifyMsg> getMessageByType(MsgType type);
+
+    void sendMsg(int notifyUserId, int operateUserId, int articleId, MsgType type);
 }

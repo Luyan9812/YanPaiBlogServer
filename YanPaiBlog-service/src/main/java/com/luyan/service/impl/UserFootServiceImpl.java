@@ -6,6 +6,7 @@ import com.luyan.entity.domain.Article;
 import com.luyan.entity.domain.UserFoot;
 import com.luyan.mapper.ArticleMapper;
 import com.luyan.mapper.UserFootMapper;
+import com.luyan.service.NotifyMsgService;
 import com.luyan.service.UserFootService;
 import com.luyan.utils.BaseContext;
 import jakarta.annotation.Resource;
@@ -21,6 +22,8 @@ public class UserFootServiceImpl extends ServiceImpl<UserFootMapper, UserFoot>
     private ArticleMapper articleMapper;
     @Resource
     private UserFootMapper userFootMapper;
+    @Resource
+    private NotifyMsgService notifyMsgService;
 
     private UserFoot getUserFoot(int uid, int articleId) {
         LambdaQueryWrapper<UserFoot> wrapper = new LambdaQueryWrapper<>();
@@ -117,6 +120,14 @@ public class UserFootServiceImpl extends ServiceImpl<UserFootMapper, UserFoot>
         if (value.equals(userFoot.getPraiseStat())) {
             return;
         }
+        if (praiseState) {  // 点赞要给被点赞者发送消息
+            notifyMsgService.sendMsg(
+                    userFoot.getDocumentUserId(),
+                    userFoot.getUserId(),
+                    articleId,
+                    NotifyMsgService.MsgType.PRAISE
+            );
+        }
         userFoot.setPraiseStat(value);
         userFootMapper.insertOrUpdate(userFoot);
         modifyArticleScore(articleId, praiseState ? 2 : -2);
@@ -128,6 +139,14 @@ public class UserFootServiceImpl extends ServiceImpl<UserFootMapper, UserFoot>
         UserFoot userFoot = getOrCreateUserFoot(articleId);
         if (value.equals(userFoot.getCollectionStat())) {
             return;
+        }
+        if (collectionState) {  // 收藏要给被收藏者发送消息
+            notifyMsgService.sendMsg(
+                    userFoot.getDocumentUserId(),
+                    userFoot.getUserId(),
+                    articleId,
+                    NotifyMsgService.MsgType.HEART
+            );
         }
         userFoot.setCollectionStat(value);
         userFootMapper.insertOrUpdate(userFoot);

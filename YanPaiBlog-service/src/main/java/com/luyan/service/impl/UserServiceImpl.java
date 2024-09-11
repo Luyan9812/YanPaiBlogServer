@@ -145,6 +145,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         int uid = BaseContext.getCurrentId();
         if (followState) {
             userRelationService.follow(uid, authorId);
+            notifyMsgService.sendMsg(authorId, uid, 0, NotifyMsgService.MsgType.FOLLOW);
         } else {
             userRelationService.unFollow(uid, authorId);
         }

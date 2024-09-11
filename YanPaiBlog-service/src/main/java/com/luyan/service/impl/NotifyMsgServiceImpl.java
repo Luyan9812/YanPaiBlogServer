@@ -1,6 +1,7 @@
 package com.luyan.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.luyan.entity.domain.Article;
 import com.luyan.entity.domain.NotifyMsg;
@@ -42,6 +43,15 @@ public class NotifyMsgServiceImpl extends ServiceImpl<NotifyMsgMapper, NotifyMsg
         return notifyMsg;
     }
 
+    // 设置某用户某种类型的消息状态
+    private void setMsgState(int notifyUserId, int type, boolean state) {
+        LambdaUpdateWrapper<NotifyMsg> wrapper = new LambdaUpdateWrapper<>();
+        wrapper.eq(NotifyMsg::getNotifyUserId, notifyUserId);
+        wrapper.eq(NotifyMsg::getType, type);
+        wrapper.set(NotifyMsg::getState, state ? 1 : 0);
+        notifyMsgMapper.update(wrapper);
+    }
+
     @Override
     public long getMsgCount(int uid, MsgType type, MsgState state) {
         LambdaQueryWrapper<NotifyMsg> wrapper = new LambdaQueryWrapper<>();
@@ -53,12 +63,13 @@ public class NotifyMsgServiceImpl extends ServiceImpl<NotifyMsgMapper, NotifyMsg
 
     @Override
     public long getAllUnreadMsgCount(int uid) {
-        return getMsgCount(uid, MsgType.ALL, MsgState.ALL);
+        return getMsgCount(uid, MsgType.ALL, MsgState.UNREAD);
     }
 
     @Override
     public List<NotifyMsg> getMessageByType(MsgType type) {
         Integer uid = BaseContext.getCurrentId();
+        setMsgState(uid, type.getCode(), true);
         LambdaQueryWrapper<NotifyMsg> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(NotifyMsg::getNotifyUserId, uid);
         wrapper.eq(NotifyMsg::getType, type.getCode());
@@ -75,13 +86,13 @@ public class NotifyMsgServiceImpl extends ServiceImpl<NotifyMsgMapper, NotifyMsg
         StringBuilder builder = new StringBuilder();
         UserInfo info = userInfoMapper.selectById(operateUserId);
         if (type == MsgType.FOLLOW) {
-            builder.append(String.format("用户 %s 关注了你", info.getNickName()));
+            builder.append(String.format("用户“%s”关注了你", info.getNickName()));
         } else {
             Article article = articleMapper.selectById(articleId);
             if (type == MsgType.HEART) {
-                builder.append(String.format("用户 %s 收藏了你的文章《%s》", info.getNickName(), article.getTitle()));
+                builder.append(String.format("用户“%s”收藏了你的文章《%s》", info.getNickName(), article.getTitle()));
             } else if (type == MsgType.PRAISE) {
-                builder.append(String.format("用户 %s 点赞了你的文章《%s》", info.getNickName(), article.getTitle()));
+                builder.append(String.format("用户“%s”点赞了你的文章《%s》", info.getNickName(), article.getTitle()));
             }
         }
         notifyMsg.setMsg(builder.toString());

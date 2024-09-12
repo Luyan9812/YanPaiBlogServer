@@ -2,8 +2,9 @@
 
 <configuration scan="true" scanPeriod="60 seconds" debug="false">
     <property name="projectName" value="yan_pai_blog" />
-<!--    <property name="logging.file.path" value="/usr/local/devEnv/logs" />-->
-    <property name="logging.file.path" value="/Users/luyan/Documents/idea/logs" />
+<!--    <property name="logging.file.path" value="E:\ideaSpace\logs" />-->
+    <property name="logging.file.path" value="/usr/local/devEnv/logs" />
+<!--    <property name="logging.file.path" value="/Users/luyan/Documents/idea/logs" />-->
 
     <!-- 控制台附加器 -->
     <appender name="consoleLog" class="ch.qos.logback.core.ConsoleAppender">

@@ -14,7 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 @Slf4j
-@CrossOrigin
+@CrossOrigin({"http://47.96.95.64"})
 @RestController
 @RequestMapping("article")
 public class ArticleController {

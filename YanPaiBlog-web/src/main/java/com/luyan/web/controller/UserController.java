@@ -17,7 +17,7 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@CrossOrigin
+@CrossOrigin({"http://47.96.95.64"})
 @RequestMapping("user")
 public class UserController {
     @Resource

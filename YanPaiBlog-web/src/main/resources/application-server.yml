@@ -1,0 +1,8 @@
+global:
+  upload-covers: ${global.base-upload-path}/covers/
+  upload-headers: ${global.base-upload-path}/headers/
+  base-upload-path: /usr/local/devEnv/uploads/${database.name}
+
+spring:
+  datasource:
+    password: Ly12345.
